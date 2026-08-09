@@ -1,37 +1,20 @@
 class Solution {
-
     public int minSubArrayLen(int target, int[] nums) {
 
-        int n = nums.length;
-
-        // Create prefix sum array
-        int[] prefix = new int[n + 1];
-
-        for (int i = 0; i < n; i++) {
-            prefix[i + 1] = prefix[i] + nums[i];
-        }
-
+        int left = 0;
+        int sum = 0;
         int minLen = Integer.MAX_VALUE;
 
-        // Try every starting position
-        for (int i = 0; i < n; i++) {
+        for (int right = 0; right < nums.length; right++) {
 
-            int required = prefix[i] + target;
+            sum += nums[right];
 
-            // Binary search for first prefix[j] >= required
-            int left = i + 1;
-            int right = n;
+            while (sum >= target) {
 
-            while (left <= right) {
+                minLen = Math.min(minLen, right - left + 1);
 
-                int mid = left + (right - left) / 2;
-
-                if (prefix[mid] >= required) {
-                    minLen = Math.min(minLen, mid - i);
-                    right = mid - 1;
-                } else {
-                    left = mid + 1;
-                }
+                sum -= nums[left];
+                left++;
             }
         }
 
