@@ -11,27 +11,40 @@ class Solution {
             map.put(num, map.getOrDefault(num, 0) + 1);
         }
 
-        // Step 2: Min Heap based on frequency
-        PriorityQueue<Integer> pq =
-            new PriorityQueue<>(
-                (a, b) -> map.get(a) - map.get(b)
-            );
+        // Step 2: Create buckets
+        List<Integer>[] buckets = new List[nums.length + 1];
 
-        // Step 3: Keep only k elements
         for (int num : map.keySet()) {
 
-            pq.add(num);
+            int frequency = map.get(num);
 
-            if (pq.size() > k) {
-                pq.poll();
+            if (buckets[frequency] == null) {
+                buckets[frequency] = new ArrayList<>();
             }
+
+            buckets[frequency].add(num);
         }
 
-        // Step 4: Create result
+        // Step 3: Get top k elements
         int[] result = new int[k];
+        int index = 0;
 
-        for (int i = 0; i < k; i++) {
-            result[i] = pq.poll();
+        for (int frequency = buckets.length - 1;
+             frequency >= 0;
+             frequency--) {
+
+            if (buckets[frequency] != null) {
+
+                for (int num : buckets[frequency]) {
+
+                    result[index] = num;
+                    index++;
+
+                    if (index == k) {
+                        return result;
+                    }
+                }
+            }
         }
 
         return result;
